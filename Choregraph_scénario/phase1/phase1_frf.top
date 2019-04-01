@@ -1,0 +1,60 @@
+topic: ~phase1()
+language: frf
+
+
+#==================================================================#
+##### Voice tweaking #####
+concept:(confluences) ["Confluences" "musée des confluences"]
+concept:(non) ["non" "nan" "non merci" "sans façon"]
+concept:(église) ["église" "cathédrale" "monument"]
+concept:(accueil) ["accueil" "home"]
+
+#==================================================================#
+
+u: (e:onStart) Bonjour. ^gotoReactivate(demande)
+
+proposal: %demande $activite=demande $Example/Page1=1  Que voulez-vous faire ? visiter, dormir, ou vous déplacer?
+    u1:([Visiter e:Example/Button1]) Vous voulez visiter Lyon ! ^gotoReactivate(visite)
+    u1:([Dormir e:Example/Button2])  Vous avez sommeil ?  ^gotoReactivate(dormir)
+    u1:([Déplacer e:Example/Button3]) Ou voulez vous aller ? ^gotoReactivate(deplacer)
+    
+u: (e:ManagementEvent $ManagementEvent=="pause") Où êtes-vous ? Je ne vous vois plus, remettez vous devant moi s'il vous plait.
+
+u: (e:ManagementEvent $ManagementEvent=="restart") Ah vous êtes la ! ^gotoReactivate($activite)
+u: (e:ManagementEvent $ManagementEvent=="resume") Ah vous êtes la ! ^gotoReactivate($activite)
+    
+proposal: %visite $Example/Page2=1 $activite=visite Je peux vous donner des informations sur les musées,les églises ou les commerces. On commence par quoi ?
+    u1:(musée) %musée $Example/Page21=1 Choisissez parmis le musée des confluences, des Beaux-arts, Miniatures ou lugdunoum. $activite="musée" 
+        u2:(~confluences) Le musée des confluences est un musée d'histoire naturelle, d'anthropologie, des sociétés et des civilisations. ^gotoReactivate(fin)
+        u2:({Musée} {Cinéma et} Miniature) Le musée de miniature et des décors de cinéma contient de nombreux objets autours de l'univers de Star Warz et du Parfum. ^gotoReactivate(fin)
+        u2:({Musée des} beaux-art) Le musée des beaux-arts possède une grande collections d'art datant de l'égypte ancienne à nos jours. Vraiment chouette ! ^gotoReactivate(fin)
+        u2:(Lugdunoum) Le Musée de Lugdunoum est un musée sur l'archéologie Romaine et on peut visiter l'amphitéatre Romain sur la colline de Fourvière. ^gotoReactivate(fin)
+        u2:(retour) on retourne sur l'accueil. ^gotoReactivate(demande)
+        
+    u1:(~église) %église $Example/Page22=1 Choisissez parmis les 3 églises à visiter. $activite="église"
+        u2:({Basilique} {de} Fourvière) La Basilique de Fourvière est un des monument les plus emblématique de Lyon, avec une superbe vue sur la ville. ^gotoReactivate(fin)
+        u2:(Saint Jean) Saint Jean, Un édifice incontournable du Vieux-Lyon. La cathédrale fut construite de 1180 à 1480. ^gotoReactivate(fin)
+        u2:(Saint Nizier) Saint Nizier est située au cœur de la Presqu'île,elle a étée entièrement reconstruite aux quinzième siècles et d'un style gothique flamboyant. ^gotoReactivate(fin)
+        u2:(retour) on retourne sur l'accueil. ^gotoReactivate(demande)
+        
+    u1:(commerces) $Example/Page23=1 Lyon possède 2 grands centre commerciaux, Un situé à la confluence l'autre à part-dieu. $activite="visite"
+        u2:(retour) on retourne sur l'accueil. ^gotoReactivate(demande)
+    
+    u1:(retour) on retourne sur l'accueil. ^gotoReactivate(demande)
+    
+proposal: %dormir %hotel $Example/Page3=1 $activite="hotel" Voici quelques hôtels à proximité. Je vous propose Ibis, kyriad, ou hotel, F 1.
+    u1:(Ibis) Ibis, Cliquez sur le logo de l'hotel pour aller sur le site. ^gotoReactivate(fin)
+    u1:(Kyriad) Kyriad, très bon choixCliquez sur le logo de l'hotel pour aller sur le site. ^gotoReactivate(fin)
+    u1:(hotel F1) Cliquez sur le logo de l'hotel pour aller sur le site. ^gotoReactivate(fin)
+    u1:(retour) hotel, F 1, Cliquez sur le logo de l'hotel pour aller sur le site. ^gotoReactivate(demande)
+
+proposal: %deplacer $Example/Page4=1 Appuyer sur le bouton pour afficher la carte des Transports en Commun de Lyon.
+    u1:(retour) $onStopped=1
+
+proposal: %fin Voulez-vous en savoir d'avantage sur les $activite ?
+    u1:(oui) Très bien, on continue. ^gotoReactivate($activite)
+    u1:(~non) Très bien. ^gotoReactivate(dernier)
+    
+proposal: %dernier Voulez-vous retourner sur la page d'accueil? 
+    u1:(oui) ^gotoReactivate(demande)
+    u1:(~non) D'accord $onStopped=1

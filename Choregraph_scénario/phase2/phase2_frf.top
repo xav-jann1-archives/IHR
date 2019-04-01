@@ -1,0 +1,4 @@
+topic: ~phase2()
+language: frf
+
+u:(e:onStart) $Example/Page1=1 Merci et bon séjour à Lyon. $onStopped=1

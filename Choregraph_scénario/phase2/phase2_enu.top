@@ -1,0 +1,10 @@
+topic: ~phase2()
+language: enu
+
+u:(e:onStart) $Example/Page2=1 C'est quoi ta couleur préférée?
+
+u:(Rouge) $Example/Page0=1 Rouge? Ok $onStopped=1
+
+u:(Bleu) $Example/Page0=1 Bleu? Ok $onStopped=1
+
+u:(Jaune) $Example/Page0=1 Jaune? Ok $onStopped=1
